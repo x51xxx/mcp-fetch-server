@@ -257,8 +257,11 @@ Version numbers use underscores (`chrome_147`, not `chrome147`). An unknown name
 
 ```bash
 npm install
-npm start   # run the server over stdio
-npm test    # end-to-end smoke tests, no network required
+npm start          # run the server over stdio
+npm test           # end-to-end smoke tests, no network required
+npm run format     # format with Biome
+npm run lint       # lint with Biome
+npm run check      # format + lint check, also run before publish
 ```
 
 The tests spawn the real server over stdio and drive it with an MCP client against a local HTTP server,

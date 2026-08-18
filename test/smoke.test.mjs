@@ -1,8 +1,9 @@
 // End-to-end smoke tests: they spawn the real MCP server over stdio and drive it
 // with an MCP client, against a local HTTP server — no network access needed.
-import test, { after, before } from 'node:test';
+
 import assert from 'node:assert/strict';
 import http from 'node:http';
+import test, { after, before } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';

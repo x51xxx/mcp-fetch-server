@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { FetchError, fetch as impersonatedFetch } from '@trishchuk/fetch';
 import { z } from 'zod';
-import { fetch as impersonatedFetch, FetchError } from '@trishchuk/fetch';
 
 // Keep tool-return payloads well under context-busting size, independent of
 // the library's own (much larger) default cap.
@@ -54,9 +54,9 @@ server.registerTool(
   {
     title: 'Fetch',
     description:
-      "HTTP fetch backed by @trishchuk/fetch: a curl-impersonate-style client that emulates a real " +
+      'HTTP fetch backed by @trishchuk/fetch: a curl-impersonate-style client that emulates a real ' +
       'browser TLS/HTTP2 fingerprint (JA3/JA4, ClientHello, ALPN) so requests are not flagged by ' +
-      'fingerprint-based bot detection (Cloudflare, DataDome, PerimeterX, etc.) the way Node\'s default ' +
+      "fingerprint-based bot detection (Cloudflare, DataDome, PerimeterX, etc.) the way Node's default " +
       'HTTP client is. Use it for GET/POST/etc. against sites that block or challenge plain scrapers.',
     inputSchema: {
       url: z.string().url().describe('Absolute URL to request.'),
@@ -66,17 +66,26 @@ server.registerTool(
       impersonate: z
         .string()
         .optional()
-        .describe('Browser fingerprint profile, e.g. "chrome_147", "safari_26", "random". Defaults to the library default.'),
-      platform: z.enum(['windows', 'macos', 'linux', 'android', 'ios']).optional().describe('Declared OS for the fingerprint.'),
+        .describe(
+          'Browser fingerprint profile, e.g. "chrome_147", "safari_26", "random". Defaults to the library default.',
+        ),
+      platform: z
+        .enum(['windows', 'macos', 'linux', 'android', 'ios'])
+        .optional()
+        .describe('Declared OS for the fingerprint.'),
       proxy: z.string().optional().describe('Proxy URL: http://, https://, or socks5://, optionally with user:pass@.'),
       session: z
         .string()
         .optional()
-        .describe('Opaque session id. Reusing it across calls keeps the same underlying client and cookie jar (e.g. to stay logged in).'),
+        .describe(
+          'Opaque session id. Reusing it across calls keeps the same underlying client and cookie jar (e.g. to stay logged in).',
+        ),
       resolve: z
         .record(z.union([z.string(), z.array(z.string())]))
         .optional()
-        .describe('Hostname-to-IP pinning, e.g. { "example.com": "192.0.2.1" }. Useful to pin DNS for SSRF-safety or A/B hosts.'),
+        .describe(
+          'Hostname-to-IP pinning, e.g. { "example.com": "192.0.2.1" }. Useful to pin DNS for SSRF-safety or A/B hosts.',
+        ),
       redirect: z.enum(['follow', 'manual', 'error']).optional().describe('Redirect handling. Defaults to "follow".'),
       httpVersion: z.enum(['http1', 'http2']).optional().describe('Force HTTP/1.1 or HTTP/2 instead of negotiating.'),
       tlsMinVersion: z.enum(['1.0', '1.1', '1.2', '1.3']).optional(),
@@ -88,7 +97,9 @@ server.registerTool(
         .positive()
         .max(DEFAULT_MAX_RESPONSE_BYTES)
         .optional()
-        .describe(`Response body cap in bytes (max ${DEFAULT_MAX_RESPONSE_BYTES}, i.e. ${DEFAULT_MAX_RESPONSE_BYTES / (1024 * 1024)}MB, to keep tool output usable). A larger body is truncated to this size and flagged with "truncated": true, not rejected.`),
+        .describe(
+          `Response body cap in bytes (max ${DEFAULT_MAX_RESPONSE_BYTES}, i.e. ${DEFAULT_MAX_RESPONSE_BYTES / (1024 * 1024)}MB, to keep tool output usable). A larger body is truncated to this size and flagged with "truncated": true, not rejected.`,
+        ),
       encoding: z
         .enum(['auto', 'text', 'base64'])
         .default('auto')
@@ -148,7 +159,9 @@ server.registerTool(
         redirected: res.redirected,
         headers: Object.fromEntries(res.headers.entries()),
         bodyEncoding: useText ? 'text' : 'base64',
-        body: useText ? new TextDecoder('utf-8', { fatal: false }).decode(bytes) : Buffer.from(bytes).toString('base64'),
+        body: useText
+          ? new TextDecoder('utf-8', { fatal: false }).decode(bytes)
+          : Buffer.from(bytes).toString('base64'),
         truncated,
       };
 
