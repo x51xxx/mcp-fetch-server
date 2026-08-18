@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@trishchuk/mcp-fetch-server.svg?style=flat-square)](https://www.npmjs.com/package/@trishchuk/mcp-fetch-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-blueviolet.svg?style=flat-square)](https://modelcontextprotocol.io)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg?style=flat-square)](https://nodejs.org)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D24.0.0-brightgreen.svg?style=flat-square)](https://nodejs.org)
 
 A high-performance [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server providing an anti-bot-resilient `fetch` tool for AI agents (Claude Code, Claude Desktop, Cursor, Windsurf, Cline, Antigravity, etc.).
 
@@ -23,6 +23,14 @@ Furthermore, standard MCP fetching tools often fail on large payloads or blow up
 2. **LLM Context-Safe Truncation**: Streams and caps response bodies at 2MB (`maxResponseBytes`). Oversized pages are cleanly truncated and flagged with `"truncated": true` rather than crashing with errors.
 3. **Stateful Sessions**: Maintain cookies, login states, and connection pools across multiple agent tool calls using the `session` parameter.
 4. **Smart Encoding**: Automatically detects MIME types and returns clean UTF-8 text for HTML/JSON/XML or Base64 for binary files (images, PDFs, documents).
+
+---
+
+## ✅ Requirements
+
+- **Node.js >= 24** — required by `@trishchuk/fetch`.
+- Prebuilt native binaries ship for macOS (arm64, x64), Linux (x64/arm64, glibc and musl) and Windows
+  (x64). Other platforms are not supported by the underlying client.
 
 ---
 
@@ -155,7 +163,7 @@ If the network connection fails, times out, or the URL is invalid, the tool retu
 {
   "error": true,
   "code": "TIMEOUT",
-  "message": "request timed out after 5000ms"
+  "message": "failed to read response body: request or response body error: operation timed out"
 }
 ```
 
@@ -232,10 +240,29 @@ If the network connection fails, times out, or the URL is invalid, the tool retu
 
 `@trishchuk/mcp-fetch-server` supports a wide range of browser fingerprints:
 
-- **Chrome**: `"chrome_147"`, `"chrome_131"`, `"chrome_124"`, `"chrome_116"`, etc.
-- **Safari**: `"safari_26"`, `"safari_18"`, `"safari_17"`
-- **Firefox**: `"firefox_133"`, `"firefox_120"`
-- **Dynamic**: `"random"`, `"weighted_random"` (rotates fingerprints automatically)
+- **Chrome**: `"chrome_100"` … `"chrome_149"` (e.g. `"chrome_147"`, `"chrome_131"`, `"chrome_116"`)
+- **Edge**: `"edge_101"` … `"edge_148"`
+- **Opera**: `"opera_116"` … `"opera_131"`
+- **Firefox**: `"firefox_109"`, `"firefox_133"`, `"firefox_147"` …, plus `"firefox_private_136"` and `"firefox_android_135"`
+- **Safari**: `"safari_15.3"` … `"safari_26.4"`, plus iOS/iPad variants (`"safari_ios_26"`, `"safari_ipad_26"`)
+- **OkHttp** (Android apps): `"okhttp_3.9"` … `"okhttp_5"`
+- **Dynamic**: `"random"`, `"weighted_random"` (rotates fingerprints automatically, pinned per `session`)
+
+Version numbers use underscores (`chrome_147`, not `chrome147`). An unknown name fails fast with an
+`InvalidArg` error that lists every accepted variant.
+
+---
+
+## 🧪 Development
+
+```bash
+npm install
+npm start   # run the server over stdio
+npm test    # end-to-end smoke tests, no network required
+```
+
+The tests spawn the real server over stdio and drive it with an MCP client against a local HTTP server,
+covering truncation at the cap, redirect modes, `HEAD`, base64 bodies, timeouts and transport errors.
 
 ---
 
