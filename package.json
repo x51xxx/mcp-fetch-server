@@ -1,0 +1,58 @@
+{
+  "name": "@trishchuk/mcp-fetch-server",
+  "version": "0.1.0",
+  "description": "MCP server exposing a fetch tool backed by @trishchuk/fetch (TLS/HTTP2 fingerprint impersonation to bypass bot-detection).",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "bin": {
+    "mcp-fetch-server": "src/index.js"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test test/smoke.test.mjs",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "fetch",
+    "http-client",
+    "tls-fingerprint",
+    "ja3",
+    "ja4",
+    "impersonate",
+    "curl-impersonate",
+    "scraping",
+    "bot-detection",
+    "cloudflare"
+  ],
+  "author": "Taras Trishchuk (https://github.com/x51xxx)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/x51xxx/mcp-fetch-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/x51xxx/mcp-fetch-server/issues"
+  },
+  "homepage": "https://github.com/x51xxx/mcp-fetch-server#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@trishchuk/fetch": "^1.2.1",
+    "zod": "^4.4.3"
+  }
+}

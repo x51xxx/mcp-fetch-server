@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "node",
+      "args": ["/Users/taras/www/RND/mcp-fetch-server/src/index.js"]
+    }
+  }
+}
